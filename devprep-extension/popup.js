@@ -127,4 +127,14 @@ document.getElementById("login-btn")?.addEventListener("click", async () => {
   }
 });
 
+document.getElementById("logout-btn")?.addEventListener("click", async () => {
+  await chrome.storage.local.remove("token");
+  selectedConfidence = null;
+  document.querySelectorAll(".star").forEach(s => s.classList.remove("active"));
+  hide("main-view");
+  show("login-view");
+  const statusEl = document.getElementById("login-status");
+  if (statusEl) statusEl.innerText = "";
+});
+
 init();

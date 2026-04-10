@@ -4,7 +4,7 @@ import { sendDailyDigest } from "./email.service.js";
 
 export const startCronJobs = () => {
   // Every day at 8:00 AM
-  cron.schedule("0 8 * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     console.log("Running daily digest cron job...");
     try {
       const users = await User.find({ emailDigest: true });
