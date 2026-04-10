@@ -8,7 +8,15 @@ import aiRoutes from "./routes/ai.route.js";
 import { startCronJobs } from "./services/cron.service.js";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://devprep-backend-jze5.onrender.com/api",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

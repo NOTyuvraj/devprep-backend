@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5001/api";
+const API_URL = "https://devprep-backend-jze5.onrender.com/api";
 let selectedConfidence = null;
 
 const show = (id) => document.getElementById(id).style.display = "block";
