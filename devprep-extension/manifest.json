@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "DevPrep",
+  "version": "1.0",
+  "description": "Track LeetCode problems with spaced repetition",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "host_permissions": ["https://leetcode.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
