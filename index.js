@@ -7,6 +7,7 @@ import problemRoutes from "./routes/problem.route.js";
 import aiRoutes from "./routes/ai.route.js";
 import { sendDailyDigest } from "./services/email.service.js";
 import User from "./models/user.model.js";
+import emailRoutes from "./routes/email.route.js";
 
 const app = express();
 app.use(
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/email", emailRoutes);
 
 app.get("/cron/daily-digest", async (req, res) => {
   const { key } = req.query;

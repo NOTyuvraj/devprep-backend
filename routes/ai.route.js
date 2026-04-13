@@ -14,6 +14,21 @@ router.get("/test-email", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/preview/:userId", async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  const due = await getDueProblems(user._id);
+
+  const problemList = due.map(p =>
+    `<li><a href="${p.url}">${p.title}</a> — ${p.topic} (${p.difficulty})</li>`
+  ).join("");
+
+  res.send(`
+    <h2>Your Daily Revision List 🧠</h2>
+    <p>You have <strong>${due.length}</strong> problems due:</p>
+    <ul>${problemList}</ul>
+  `);
+});
+
 router.get("/insights", authMiddleware, getInsights);
 
 export default router;

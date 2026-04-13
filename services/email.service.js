@@ -16,24 +16,37 @@ export const sendDailyDigest = async (user) => {
   const due = await getDueProblems(user._id);
   if (due.length === 0) return;
 
-  const problemList = due.map(p =>
-    `<li><a href="${p.url}">${p.title}</a> — ${p.topic} (${p.difficulty})</li>`
-  ).join("");
+  const problemList = due
+    .map(
+      (p) =>
+        `<li><a href="${p.url}">${p.title}</a> — ${p.topic} (${p.difficulty})</li>`,
+    )
+    .join("");
+
+    const unsubscribeLink =
+  `${process.env.APP_URL}/api/email/unsubscribe?user=${user._id}`;
 
   try {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: user.email,
-    subject: `DevPrep — ${due.length} problems to review today`,
-    html: `
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: `DevPrep — ${due.length} problems to review today`,
+      html: `
       <h2>Your Daily Revision List 🧠</h2>
       <p>You have <strong>${due.length} problems</strong> due for review today:</p>
       <ul>${problemList}</ul>
       <p>Stay consistent. Every review counts.</p>
+
+      <hr/>
+    <p style="font-size:12px;color:#666">
+      Don't want these emails?
+      <a href="${unsubscribeLink}">Unsubscribe</a>
+    </p>
+
       <p>— DevPrep</p>
     `,
-  });
-} catch (err) {
-  console.error("Email failed for", user.email, err.message);
-}
+    });
+  } catch (err) {
+    console.error("Email failed for", user.email, err.message);
+  }
 };
