@@ -14,7 +14,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://dev-prep-black.vercel.app"
+      "https://dev-prep-black.vercel.app",
+      "chrome-extension://bnllfonofnnfbhficcjkekalgogookda"
     ],
     credentials: true,
   }),
