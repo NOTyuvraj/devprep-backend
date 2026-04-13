@@ -22,9 +22,7 @@ export const sendDailyDigest = async (user) => {
         `<li><a href="${p.url}">${p.title}</a> — ${p.topic} (${p.difficulty})</li>`,
     )
     .join("");
-
-    const unsubscribeLink =
-  `${process.env.APP_URL}/api/email/unsubscribe?user=${user._id}`;
+  const unsubscribeLink = `${process.env.APP_URL}/api/email/unsubscribe?user=${user._id}`;
 
   try {
     await transporter.sendMail({
@@ -46,7 +44,9 @@ export const sendDailyDigest = async (user) => {
       <p>— DevPrep</p>
     `,
     });
+    console.log("Email sent to:", user.email);
   } catch (err) {
-    console.error("Email failed for", user.email, err.message);
+    console.error("Email failed for:", user.email);
+    console.error(err);
   }
 };
