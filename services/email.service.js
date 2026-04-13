@@ -10,17 +10,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendDailyDigest = async (userId) => {
-  const user = await User.findById(userId);
+export const sendDailyDigest = async (user) => {
   if (!user || !user.emailDigest) return;
 
-  const due = await getDueProblems(userId);
+  const due = await getDueProblems(user._id);
   if (due.length === 0) return;
 
   const problemList = due.map(p =>
     `<li><a href="${p.url}">${p.title}</a> — ${p.topic} (${p.difficulty})</li>`
   ).join("");
 
+  try {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: user.email,
@@ -33,4 +33,7 @@ export const sendDailyDigest = async (userId) => {
       <p>— DevPrep</p>
     `,
   });
+} catch (err) {
+  console.error("Email failed for", user.email, err.message);
+}
 };
