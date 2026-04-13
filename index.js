@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://devprep-backend-jze5.onrender.com/api",
+      "https://dev-prep-black.vercel.app"
     ],
     credentials: true,
   }),
