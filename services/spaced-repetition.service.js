@@ -1,11 +1,23 @@
-// SM-2 Algorithm
-export const calculateNextReview = (confidence, easinessFactor, interval, timesReviewed) => {
-  let newEF = easinessFactor + (0.1 - (5 - confidence) * (0.08 + (5 - confidence) * 0.02));
-  if (newEF < 1.3) newEF = 1.3;
+// SM-2 Based Spaced Repetition
 
-  let newInterval;
+export const calculateNextReview = (
+  confidence,
+  easinessFactor,
+  interval,
+  timesReviewed,
+) => {
+  let newEF =
+    easinessFactor +
+    (0.1 - (5 - confidence) * (0.08 + (5 - confidence) * 0.02));
+
+  if (newEF < 1.3) {
+    newEF = 1.3;
+  }
+
+  let newInterval = 1;
+
   if (confidence < 3) {
-    newInterval = 1; // failed — review tomorrow
+    newInterval = 1;
   } else if (timesReviewed === 0) {
     newInterval = 1;
   } else if (timesReviewed === 1) {
@@ -15,7 +27,12 @@ export const calculateNextReview = (confidence, easinessFactor, interval, timesR
   }
 
   const nextReviewDate = new Date();
+
   nextReviewDate.setDate(nextReviewDate.getDate() + newInterval);
 
-  return { newEF, newInterval, nextReviewDate };
+  return {
+    newEF,
+    newInterval,
+    nextReviewDate,
+  };
 };

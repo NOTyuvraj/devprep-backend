@@ -13,17 +13,22 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "connect-mongo": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.1",
+    "express-session": "^1.19.0",
     "groq-sdk": "^1.1.2",
-    "ioredis": "^5.10.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.1",
     "mongoose": "^9.4.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.4",
-    "redis": "^5.11.0"
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0"
   },
   "type": "module"
 }

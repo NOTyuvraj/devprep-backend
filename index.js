@@ -1,65 +1,86 @@
 import "./config/env.js";
 import express from "express";
 import cors from "cors";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import helmet from "helmet";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.route.js";
 import problemRoutes from "./routes/problem.route.js";
 import aiRoutes from "./routes/ai.route.js";
+import emailRoutes from "./routes/email.route.js";
+import passport from "./config/passport.js";
 import { sendDailyDigest } from "./services/email.service.js";
 import User from "./models/user.model.js";
-import emailRoutes from "./routes/email.route.js";
 
 const app = express();
+
+app.set("trust proxy", 1); // Required on Render (sits behind a proxy)
+
+app.use(helmet());
+
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://dev-prep-black.vercel.app",
-      "chrome-extension://bnllfonofnnfbhficcjkekalgogookda"
-    ],
+      process.env.FRONTEND_URL,
+      "chrome-extension://bnllfonofnnfbhficcjkekalgogookda",
+    ].filter(Boolean),
     credentials: true,
   }),
 );
+
 app.use(express.json());
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      ttl: 7 * 24 * 60 * 60, // 7 days
+    }),
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
+  }),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/email", emailRoutes);
 
+// Cron endpoint — triggered by Render Cron Job
 app.get("/cron/daily-digest", async (req, res) => {
   const { key } = req.query;
 
   if (key !== process.env.CRON_SECRET) {
-    return res.status(401).send("Unauthorized");
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   console.log("Daily digest cron triggered:", new Date().toISOString());
 
   try {
     const users = await User.find({ emailDigest: true });
-
-    await Promise.all(
-      users.map((user) => sendDailyDigest(user._id))
-    );
-
+    await Promise.all(users.map((user) => sendDailyDigest(user._id)));
     console.log(`Digest sent to ${users.length} users`);
-
-    res.json({
-      success: true,
-      users: users.length,
-    });
+    res.json({ success: true, users: users.length });
   } catch (err) {
     console.error("Cron failed:", err);
-
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
-app.get("/health", (req, res) => res.json({ status: "ok" }));
+app.get("/health", (_, res) => res.json({ status: "ok" }));
 
 const PORT = process.env.PORT || 5001;
 
