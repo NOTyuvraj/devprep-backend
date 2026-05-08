@@ -38,8 +38,13 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
+      mongoUrl:
+        process.env.MONGODB_URI ||
+        (() => {
+          throw new Error("MONGODB_URI is not set");
+        })(),
       ttl: 7 * 24 * 60 * 60, // 7 days
+      autoRemove: "native",
     }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
