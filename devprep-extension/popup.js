@@ -137,4 +137,18 @@ document.getElementById("logout-btn")?.addEventListener("click", async () => {
   if (statusEl) statusEl.innerText = "";
 });
 
+document.getElementById("token-btn")?.addEventListener("click", async () => {
+  const token = document.getElementById("token-input").value.trim();
+  const statusEl = document.getElementById("login-status");
+  if (!token) {
+    statusEl.className = "status error";
+    statusEl.innerText = "Please paste a token";
+    return;
+  }
+  await chrome.storage.local.set({ token });
+  hide("login-view");
+  show("main-view");
+  loadProblem();
+});
+
 init();
