@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      process.env.FRONTEND_URL,
+      process.env.CLIENT_URL,
       "chrome-extension://bnllfonofnnfbhficcjkekalgogookda",
     ].filter(Boolean),
     credentials: true,
