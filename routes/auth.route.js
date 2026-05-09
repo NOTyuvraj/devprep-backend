@@ -41,7 +41,7 @@ router.get(
     );
 
     return res.redirect(
-      `${process.env.FRONTEND_URL}` + `/oauth-success?token=${token}`,
+      `${process.env.CLIENT_URL}` + `/oauth-success?token=${token}`,
     );
   },
 );
