@@ -1,8 +1,6 @@
 import "./config/env.js";
 import express from "express";
 import cors from "cors";
-import session from "express-session";
-import MongoStore from "connect-mongo";
 import helmet from "helmet";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.route.js";
@@ -27,36 +25,12 @@ app.use(
       "chrome-extension://bnllfonofnnfbhficcjkekalgogookda",
     ].filter(Boolean),
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl:
-        process.env.MONGO_URI ||
-        (() => {
-          throw new Error("MONGODB_URI is not set");
-        })(),
-      ttl: 7 * 24 * 60 * 60, // 7 days
-      autoRemove: "native",
-    }),
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    },
-  }),
-);
-
 app.use(passport.initialize());
-app.use(passport.session());
 
 // Routes
 app.use("/api/auth", authRoutes);
