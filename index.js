@@ -50,7 +50,7 @@ app.get("/cron/daily-digest", async (req, res) => {
 
   try {
     const users = await User.find({ emailDigest: true });
-    await Promise.all(users.map((user) => sendDailyDigest(user._id)));
+    await Promise.all(users.map((user) => sendDailyDigest(user)));
     console.log(`Digest sent to ${users.length} users`);
     res.json({ success: true, users: users.length });
   } catch (err) {
