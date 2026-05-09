@@ -3,7 +3,6 @@ import { signup, login } from "../controllers/auth.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
-
 import { validateSignup, validateLogin } from "../validators/authValidator.js";
 
 const router = express.Router();
@@ -13,43 +12,29 @@ router.post("/login", validateLogin, login);
 
 router.get(
   "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  }),
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 router.get(
   "/google/callback",
-
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "/login",
+    failureRedirect: `${process.env.CLIENT_URL}/login?error=oauth_failed`,
   }),
-
   async (req, res) => {
     const token = jwt.sign(
-      {
-        userId: req.user._id,
-        email: req.user.email,
-      },
-
+      { userId: req.user._id, email: req.user.email, tokenVersion: req.user.tokenVersion ?? 0 },
       process.env.JWT_SECRET,
-
-      {
-        expiresIn: "7d",
-      },
+      { expiresIn: "7d" }
     );
 
-    return res.redirect(
-      `${process.env.CLIENT_URL}` + `/oauth-success?token=${token}`,
-    );
-  },
+    return res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}`);
+    // Make sure CLIENT_URL is set in Render env vars (no trailing slash)
+  }
 );
 
 router.get("/me", authMiddleware, (req, res) => {
-  return res.status(200).json({
-    user: req.user,
-  });
+  return res.status(200).json({ user: req.user });
 });
 
 export default router;
