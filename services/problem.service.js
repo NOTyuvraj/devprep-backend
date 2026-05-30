@@ -8,7 +8,7 @@ export const addProblem = async (userId, data) => {
     confidence, 2.5, 1, 0
   );
 
-  const existing = await Problem.findOne({ userId, url });
+  const existing = await Problem.findOne({ userId: new mongoose.Types.ObjectId(userId), url });
 
   if (existing) {
     const { newEF, newInterval, nextReviewDate } = calculateNextReview(
@@ -46,18 +46,18 @@ export const addProblem = async (userId, data) => {
 };
 
 export const getProblems = async (userId) => {
-  return await Problem.find({ userId }).sort({ nextReviewDate: 1 });
+  return await Problem.find({userId: new mongoose.Types.ObjectId(userId)}).sort({ nextReviewDate: 1 });
 };
 
 export const getDueProblems = async (userId) => {
   return await Problem.find({
-    userId,
+    userId: new mongoose.Types.ObjectId(userId),
     nextReviewDate: { $lte: new Date() }
   }).sort({ nextReviewDate: 1 });
 };
 
 export const reviewProblem = async (userId, problemId, confidence) => {
-  const problem = await Problem.findOne({ userId, _id: problemId });
+  const problem = await Problem.findOne({ userId: new mongoose.Types.ObjectId(userId), _id: problemId });
   if (!problem) throw new Error("Problem not found");
 
   const { newEF, newInterval, nextReviewDate } = calculateNextReview(
@@ -79,7 +79,7 @@ export const reviewProblem = async (userId, problemId, confidence) => {
 };
 
 export const getStats = async (userId) => {
-  const problems = await Problem.find({ userId });
+  const problems = await Problem.find({ userId: new mongoose.Types.ObjectId(userId) });
   const due = await getDueProblems(userId);
 
   const topicMap = {};
