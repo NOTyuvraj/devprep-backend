@@ -1,14 +1,12 @@
+import mongoose from "mongoose";
 import Problem from "../models/problem.model.js";
 import { calculateNextReview } from "./spaced-repetition.service.js";
 
 export const addProblem = async (userId, data) => {
   const { title, url, topic, difficulty, confidence } = data;
+  const userObjectId = new mongoose.Types.ObjectId(userId);
 
-  const { newEF, newInterval, nextReviewDate } = calculateNextReview(
-    confidence, 2.5, 1, 0
-  );
-
-  const existing = await Problem.findOne({ userId: new mongoose.Types.ObjectId(userId), url });
+  const existing = await Problem.findOne({ userId: userObjectId, url });
 
   if (existing) {
     const { newEF, newInterval, nextReviewDate } = calculateNextReview(
@@ -28,8 +26,12 @@ export const addProblem = async (userId, data) => {
     return await existing.save();
   }
 
+  const { newEF, newInterval, nextReviewDate } = calculateNextReview(
+    confidence, 2.5, 1, 0
+  );
+
   const problem = await Problem.create({
-    userId,
+    userId: userObjectId,
     title,
     url,
     topic,
@@ -46,18 +48,23 @@ export const addProblem = async (userId, data) => {
 };
 
 export const getProblems = async (userId) => {
-  return await Problem.find({userId: new mongoose.Types.ObjectId(userId)}).sort({ nextReviewDate: 1 });
+  return await Problem.find({
+    userId: new mongoose.Types.ObjectId(userId),
+  }).sort({ nextReviewDate: 1 });
 };
 
 export const getDueProblems = async (userId) => {
   return await Problem.find({
     userId: new mongoose.Types.ObjectId(userId),
-    nextReviewDate: { $lte: new Date() }
+    nextReviewDate: { $lte: new Date() },
   }).sort({ nextReviewDate: 1 });
 };
 
 export const reviewProblem = async (userId, problemId, confidence) => {
-  const problem = await Problem.findOne({ userId: new mongoose.Types.ObjectId(userId), _id: problemId });
+  const problem = await Problem.findOne({
+    userId: new mongoose.Types.ObjectId(userId),
+    _id: problemId,
+  });
   if (!problem) throw new Error("Problem not found");
 
   const { newEF, newInterval, nextReviewDate } = calculateNextReview(
@@ -79,11 +86,12 @@ export const reviewProblem = async (userId, problemId, confidence) => {
 };
 
 export const getStats = async (userId) => {
-  const problems = await Problem.find({ userId: new mongoose.Types.ObjectId(userId) });
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+  const problems = await Problem.find({ userId: userObjectId });
   const due = await getDueProblems(userId);
 
   const topicMap = {};
-  problems.forEach(p => {
+  problems.forEach((p) => {
     if (!topicMap[p.topic]) topicMap[p.topic] = { total: 0, avgConfidence: 0 };
     topicMap[p.topic].total += 1;
     topicMap[p.topic].avgConfidence += p.confidence;
@@ -93,7 +101,7 @@ export const getStats = async (userId) => {
     .map(([topic, data]) => ({
       topic,
       total: data.total,
-      avgConfidence: +(data.avgConfidence / data.total).toFixed(2)
+      avgConfidence: +(data.avgConfidence / data.total).toFixed(2),
     }))
     .sort((a, b) => a.avgConfidence - b.avgConfidence)
     .slice(0, 5);
