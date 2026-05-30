@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
         width: 320px;
         font-family: Arial, sans-serif;
@@ -19,18 +15,9 @@
         padding: 16px;
         border-bottom: 1px solid #334155;
       }
-      .header h1 {
-        font-size: 18px;
-        color: #6366f1;
-      }
-      .header p {
-        font-size: 12px;
-        color: #94a3b8;
-        margin-top: 2px;
-      }
-      .content {
-        padding: 16px;
-      }
+      .header h1 { font-size: 18px; color: #6366f1; }
+      .header p { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+      .content { padding: 16px; }
       .problem-info {
         background: #1e293b;
         border-radius: 8px;
@@ -43,59 +30,26 @@
         color: #e2e8f0;
         margin-bottom: 6px;
       }
-      .badges {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .badge {
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 500;
-      }
-      .badge-easy {
-        background: #064e3b;
-        color: #6ee7b7;
-      }
-      .badge-medium {
-        background: #451a03;
-        color: #fcd34d;
-      }
-      .badge-hard {
-        background: #450a0a;
-        color: #fca5a5;
-      }
-      .badge-topic {
-        background: #1e3a5f;
-        color: #93c5fd;
-      }
-      .confidence-label {
-        font-size: 13px;
-        color: #94a3b8;
-        margin-bottom: 8px;
-      }
-      .stars {
-        display: flex;
-        gap: 6px;
-        margin-bottom: 16px;
-      }
+      .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+      .badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+      .badge-easy { background: #064e3b; color: #6ee7b7; }
+      .badge-medium { background: #451a03; color: #fcd34d; }
+      .badge-hard { background: #450a0a; color: #fca5a5; }
+      .badge-topic { background: #1e3a5f; color: #93c5fd; }
+      .confidence-label { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+      .stars { display: flex; gap: 6px; margin-bottom: 16px; }
       .star {
-        width: 36px;
-        height: 36px;
+        width: 36px; height: 36px;
         border-radius: 6px;
         background: #1e293b;
         border: 1px solid #334155;
         color: #94a3b8;
         font-size: 18px;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         transition: all 0.15s;
       }
-      .star:hover,
-      .star.active {
+      .star:hover, .star.active {
         background: #4f46e5;
         border-color: #6366f1;
         color: white;
@@ -112,14 +66,21 @@
         cursor: pointer;
         transition: background 0.15s;
       }
-      .btn:hover {
-        background: #4338ca;
+      .btn:hover { background: #4338ca; }
+      .btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+      .btn-secondary {
+        width: 100%;
+        padding: 10px;
+        background: #1e293b;
+        color: #94a3b8;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-top: 8px;
       }
-      .btn:disabled {
-        background: #334155;
-        color: #64748b;
-        cursor: not-allowed;
-      }
+      .btn-secondary:hover { background: #334155; }
       .status {
         margin-top: 12px;
         padding: 10px;
@@ -128,38 +89,34 @@
         text-align: center;
         display: none;
       }
-      .status.success {
-        background: #064e3b;
-        color: #6ee7b7;
-        display: block;
-      }
-      .status.error {
-        background: #450a0a;
-        color: #fca5a5;
-        display: block;
-      }
-      .not-leetcode {
-        padding: 32px 16px;
-        text-align: center;
-        color: #64748b;
-        font-size: 13px;
-      }
+      .status.success { background: #064e3b; color: #6ee7b7; display: block; }
+      .status.error { background: #450a0a; color: #fca5a5; display: block; }
+      .status.info { background: #1e3a5f; color: #93c5fd; display: block; }
+      .not-leetcode { padding: 32px 16px; text-align: center; color: #64748b; font-size: 13px; }
+
       .login-section {
-        padding: 16px;
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0;
       }
-      .input {
-        width: 100%;
-        padding: 8px 10px;
-        background: #1e293b;
-        border: 1px solid #334155;
-        border-radius: 6px;
+      .login-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      .login-title {
+        font-size: 15px;
+        font-weight: 600;
         color: #e2e8f0;
-        font-size: 13px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
       }
-      .input:focus {
-        outline: none;
-        border-color: #6366f1;
+      .login-sub {
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 20px;
+        line-height: 1.5;
       }
     </style>
   </head>
@@ -169,65 +126,33 @@
       <p>LeetCode Spaced Repetition Tracker</p>
     </div>
 
-    <div id="login-view" class="login-section" style="display: none">
-      <input id="email" class="input" type="email" placeholder="Email" />
-      <input
-        id="password"
-        class="input"
-        type="password"
-        placeholder="Password"
-      />
-      <button class="btn" id="login-btn">Login</button>
-      <div
-        style="
-          text-align: center;
-          color: #64748b;
-          margin: 8px 0;
-          font-size: 13px;
-        "
-      >
-        OR
+    <!-- LOGIN VIEW — clean, no email/password/token paste -->
+    <div id="login-view" class="login-section" style="display: none;">
+      <div class="login-icon">🔗</div>
+      <div class="login-title">Connect to DevPrep</div>
+      <div class="login-sub">
+        Sign in to your DevPrep account to start tracking problems with spaced repetition.
       </div>
-      <input
-        id="token-input"
-        class="input"
-        placeholder="Paste token from web app"
-      />
-      <button class="btn" id="token-btn" style="background: #334155">
-        Use Token
-      </button>
+      <button class="btn" id="connect-btn">Connect to DevPrep</button>
       <div id="login-status" class="status"></div>
     </div>
 
-    <div id="main-view" style="display: none">
-      <div
-        style="
-          padding: 10px 16px;
-          border-bottom: 1px solid #334155;
-          text-align: right;
-        "
-      >
+    <!-- MAIN VIEW — unchanged -->
+    <div id="main-view" style="display: none;">
+      <div style="padding: 10px 16px; border-bottom: 1px solid #334155; text-align: right;">
         <button
           id="logout-btn"
-          style="
-            background: #334155;
-            color: #e2e8f0;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-          "
+          style="background: #334155; color: #e2e8f0; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;"
         >
           Logout
         </button>
       </div>
 
       <div class="content">
-        <div id="not-leetcode" class="not-leetcode" style="display: none">
+        <div id="not-leetcode" class="not-leetcode" style="display: none;">
           <p>Open a LeetCode problem page to track it.</p>
         </div>
-        <div id="problem-section" style="display: none">
+        <div id="problem-section" style="display: none;">
           <div class="problem-info">
             <div class="problem-title" id="problem-title">Loading...</div>
             <div class="badges">

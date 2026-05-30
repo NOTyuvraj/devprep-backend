@@ -29,17 +29,11 @@ const problemSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-problemSchema.index({
-  userId: 1,
-  nextReviewDate: 1,
-});
+problemSchema.index({ userId: 1, nextReviewDate: 1 });
 
-problemSchema.index({
-  userId: 1,
-  title: 1,
-});
+problemSchema.index({ userId: 1, url: 1 }, { unique: true });
 
 export default mongoose.model("Problem", problemSchema);

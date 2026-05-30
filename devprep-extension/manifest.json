@@ -3,8 +3,12 @@
   "name": "DevPrep",
   "version": "1.0",
   "description": "Track LeetCode problems with spaced repetition",
-  "permissions": ["activeTab", "storage", "scripting"],
-  "host_permissions": ["https://leetcode.com/*"],
+  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "host_permissions": [
+    "https://leetcode.com/*",
+    "https://devprep-backend-jze5.onrender.com/*",
+    "https://dev-prep-black.vercel.app/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"

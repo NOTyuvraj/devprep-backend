@@ -8,6 +8,26 @@ export const addProblem = async (userId, data) => {
     confidence, 2.5, 1, 0
   );
 
+  const existing = await Problem.findOne({ userId, url });
+
+  if (existing) {
+    const { newEF, newInterval, nextReviewDate } = calculateNextReview(
+      confidence,
+      existing.easinessFactor,
+      existing.interval,
+      existing.timesReviewed
+    );
+
+    existing.confidence = confidence;
+    existing.easinessFactor = newEF;
+    existing.interval = newInterval;
+    existing.nextReviewDate = nextReviewDate;
+    existing.timesReviewed += 1;
+    existing.history.push({ confidence, reviewedAt: new Date() });
+
+    return await existing.save();
+  }
+
   const problem = await Problem.create({
     userId,
     title,
@@ -19,7 +39,7 @@ export const addProblem = async (userId, data) => {
     interval: newInterval,
     nextReviewDate,
     timesReviewed: 1,
-    history: [{ confidence, reviewedAt: new Date() }]
+    history: [{ confidence, reviewedAt: new Date() }],
   });
 
   return problem;
