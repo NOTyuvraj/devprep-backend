@@ -5,10 +5,11 @@ import mongoose from "mongoose";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const analyzeWeakness = async (userId) => {
+  console.log("analyzeWeakness userId:", userId, typeof userId);
   const problems = await Problem.find({
     userId: new mongoose.Types.ObjectId(userId),
   });
-
+  console.log("problems found:", problems.length);
   if (problems.length < 3) {
     return `Add at least ${3 - problems.length} more problem${3 - problems.length === 1 ? "" : "s"} to get AI insights.`;
   }
@@ -16,7 +17,7 @@ export const analyzeWeakness = async (userId) => {
   const summary = problems
     .map(
       (p) =>
-        `Title: ${p.title}, Topic: ${p.topic}, Difficulty: ${p.difficulty}, Confidence: ${p.confidence}/5, Reviews: ${p.timesReviewed}`
+        `Title: ${p.title}, Topic: ${p.topic}, Difficulty: ${p.difficulty}, Confidence: ${p.confidence}/5, Reviews: ${p.timesReviewed}`,
     )
     .join("\n");
 
