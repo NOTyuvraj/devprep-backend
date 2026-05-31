@@ -54,9 +54,12 @@ export const getProblems = async (userId) => {
 };
 
 export const getDueProblems = async (userId) => {
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+
   return await Problem.find({
     userId: new mongoose.Types.ObjectId(userId),
-    nextReviewDate: { $lte: new Date() },
+    nextReviewDate: { $lte: endOfToday },
   }).sort({ nextReviewDate: 1 });
 };
 
